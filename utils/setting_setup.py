@@ -10,6 +10,7 @@ def get_parser():
     # --------------------- flag & name
 
     # --------------------- train config
+    parser.add_argument("--encoder", type=str, default="dense", help="model type CVAE")
 
     # --------------------- loss config
 
