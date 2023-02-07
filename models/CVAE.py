@@ -1,6 +1,7 @@
 import torch
 from torch import nn
-from
+from models.base_model import *
+
 
 class CVAE(nn.Module):
     def __init__(self, args, device):
