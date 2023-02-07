@@ -6,6 +6,7 @@ def get_arguments():
     # run--config
     parser.add_argument("--seed", type=int, default=730, help="one manual random seed")
     parser.add_argument("--n_seed", type=int, default=1, help="number of runs")
+    parser.add_argument("--exp_dir", type=str, default=None, help="checkpoint directory")
 
     # --------------------- flag & name
 
