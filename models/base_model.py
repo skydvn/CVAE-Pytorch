@@ -4,7 +4,7 @@ from torch import nn
 
 class Encoder(nn.Module):
     def __init__(self):
-        pass
+        super().__init__()
 
     @staticmethod
     def forward(x):
@@ -13,7 +13,7 @@ class Encoder(nn.Module):
 
 class Decoder(nn.Module):
     def __init__(self):
-        pass
+        super().__init__()
 
     @staticmethod
     def forward(self, x):

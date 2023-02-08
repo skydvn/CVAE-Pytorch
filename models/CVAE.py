@@ -5,6 +5,7 @@ from models.base_model import *
 
 class CVAE(nn.Module):
     def __init__(self, args, device):
+        super().__init__()
         self.encoder_layer_sizes = None
         self.decoder_layer_sizes = None
         self.initial_setup(args)
