@@ -10,8 +10,12 @@ def get_arguments():
 
     # --------------------- flag & name
 
-    # --------------------- train config
+    # --------------------- model config
     parser.add_argument("--encoder", type=str, default="dense", help="model type CVAE")
+    parser.add_argument("--en_size", type=int, default=5, help="encoder layer size")
+    parser.add_argument("--de_size", type=int, default=5, help="decoder layer size")
+
+    # --------------------- train config
     parser.add_argument("--epochs", type=int, default=100, help="number of training epochs")
     parser.add_argument("--lr", type=int, default=0.005, help="learning rate")
     parser.add_argument("--wd", type=int, default=0.001, help="weight decay")

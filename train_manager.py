@@ -6,7 +6,8 @@ from torchvision import transforms
 from torchvision.datasets import MNIST
 
 from models.CVAE import *
-from models.utils import *
+from models.loss import *
+from models.optimizer import *
 
 
 def train(args):
@@ -19,7 +20,7 @@ def train(args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # Model define
-    model = CVAE(args, device)
+    model = CVAE(args, device).to(device)
     optimizer = torch.optim.Adam(model.parameters(),
                                  lr=args.lr,
                                  weight_decay=args.wd,
@@ -42,7 +43,6 @@ def train(args):
         download=True)
     data_loader = DataLoader(
         dataset=dataset, batch_size=args.batch_size, shuffle=True)
-    sampler = torch.utils.data.distributed.DistributedSampler(dataset, shuffle=True)
 
     # Time parameters
     start_time = last_logging = time.time()
@@ -52,20 +52,22 @@ def train(args):
 
     # Loops over epochs
     for epoch in range(start_epoch, args.epochs):
-        # Get data batch
+        for iteration, (x, _) in enumerate(data_loader):
+            # Get data batch
+            x_batch = x.to(device)
 
-        # Update learning rate
+            # Update learning rate
 
-        # Calculate loss function
-        with torch.cuda.amp.autocast():
-            o_batch = model.forward()
-            loss =
+            # Calculate loss function
+            with torch.cuda.amp.autocast():
+                o_batch = model(x_batch)
+                loss = loss_fn(x_batch, o_batch)
 
-        # Update loss function
-        scaler.scale(loss).backward()
-        scaler.step(optimizer)
-        scaler.update()
+            # Update loss function
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
 
-        # Logging data
+            # Logging data
 
-        pass
+            pass
