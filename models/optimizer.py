@@ -1,3 +1,7 @@
+"""
+We inherit the LARS optimizer from VIC-Reg. For more information, please visit:
+https://github.com/facebookresearch/vicreg/tree/4e12602fd495af83efd1631fbe82523e6db092e0
+"""
 import torch
 from torch import optim
 
