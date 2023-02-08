@@ -29,6 +29,7 @@ def train(args):
                                  amsgrad=1)
 
     # Load checkpoint
+    print(args.exp_dir / "model.pth")
     if (args.exp_dir / "model.pth").is_file():
         if args.rank == 0:
             print("resuming from checkpoint")

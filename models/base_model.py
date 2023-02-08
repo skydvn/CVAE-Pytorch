@@ -34,11 +34,9 @@ class Decoder(nn.Module):
             self.network.add_module(
                 name=f"L{i}", module=nn.Linear(in_size, out_size))
             if i + 1 < len(layer_sizes):
-                self.MLP.add_module(name=f"A{i}", module=nn.ReLU())
+                self.network.add_module(name=f"A{i}", module=nn.ReLU())
             else:
-                self.MLP.add_module(name="sigmoid", module=nn.Sigmoid())
-
-        self.linear_z = nn.Linear(layer_sizes[-1], latent_size)
+                self.network.add_module(name="sigmoid", module=nn.Sigmoid())
 
     def forward(self, z):
         x = self.network(z)

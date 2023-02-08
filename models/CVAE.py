@@ -15,6 +15,8 @@ class CVAE(nn.Module):
                                    latent_size=self.latent_size)
             self.decoder = Decoder(layer_sizes=self.decoder_layer_sizes,
                                    latent_size=self.latent_size)
+            print(self.encoder)
+            print(self.decoder)
         elif args.encoder == "conv":
             pass
         elif args.encoder == "resnet":
