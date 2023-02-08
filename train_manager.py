@@ -1,9 +1,12 @@
 import torch
+import time
+
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 
 from models.CVAE import *
+from models.utils import *
 
 
 def train(args):
@@ -42,9 +45,27 @@ def train(args):
     sampler = torch.utils.data.distributed.DistributedSampler(dataset, shuffle=True)
 
     # Time parameters
+    start_time = last_logging = time.time()
 
     # Init Scaler
+    scaler = torch.cuda.amp.GradScaler()
 
     # Loops over epochs
     for epoch in range(start_epoch, args.epochs):
+        # Get data batch
+
+        # Update learning rate
+
+        # Calculate loss function
+        with torch.cuda.amp.autocast():
+            o_batch = model.forward()
+            loss =
+
+        # Update loss function
+        scaler.scale(loss).backward()
+        scaler.step(optimizer)
+        scaler.update()
+
+        # Logging data
+
         pass

@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     if args.mode == "train":
         train(args)
-    elif args.mode == "test":\
+    elif args.mode == "test":
         test(args)
     else:
         pass
