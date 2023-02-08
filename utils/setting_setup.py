@@ -15,7 +15,7 @@ def get_arguments():
     parser.add_argument("--encoder", type=str, default="dense", help="model type CVAE")
     parser.add_argument("--en_size", type=list, default=[784, 512, 256], help="encoder layer size")
     parser.add_argument("--de_size", type=list, default=[256, 512, 784], help="decoder layer size")
-
+    parser.add_argument("--latent_size", type=int, default=128, help="Embedding vector size")
     # --------------------- train config
     parser.add_argument("--epochs", type=int, default=100, help="number of training epochs")
     parser.add_argument("--lr", type=float, default=0.005, help="learning rate")

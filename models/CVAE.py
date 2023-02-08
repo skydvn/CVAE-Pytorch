@@ -6,23 +6,21 @@ from models.base_model import *
 class CVAE(nn.Module):
     def __init__(self, args, device):
         super().__init__()
-        self.encoder_layer_sizes = None
-        self.decoder_layer_sizes = None
-        self.initial_setup(args)
+        self.encoder_layer_sizes = args.en_size
+        self.decoder_layer_sizes = args.de_size
+        self.latent_size = args.latent_size
 
         if args.encoder == "dense":
-            self.encoder = Encoder()
-            self.decoder = Decoder()
+            self.encoder = Encoder(layer_sizes=self.encoder_layer_sizes,
+                                   latent_size=self.latent_size)
+            self.decoder = Decoder(layer_sizes=self.decoder_layer_sizes,
+                                   latent_size=self.latent_size)
         elif args.encoder == "conv":
             pass
         elif args.encoder == "resnet":
             pass
         else:
             pass
-
-    def initial_setup(self, args):
-        self.encoder_layer_sizes = args.en_size
-        self.decoder_layer_sizes = args.de_size
 
     def forward(self, x):
         if x.dim() > 2:

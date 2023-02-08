@@ -12,10 +12,9 @@ class Encoder(nn.Module):
             self.network.add_module(
                 name=f"L{i}", module=nn.Linear(in_size, out_size))
             self.network.add_module(
-                name=f"A{i}", module=nn.ReLU()
+                name=f"A{i}", module=nn.ReLU())
 
             self.linear_z = nn.Linear(layer_sizes[-1], latent_size)
-
 
     def forward(self, x):
         x = self.network(x)
@@ -30,18 +29,16 @@ class Decoder(nn.Module):
         input_size = latent_size
 
         self.network = nn.Sequential()
-        for i, (in_size, out_size) in enumerate(zip([input_size]+layer_sizes[:-1],
+        for i, (in_size, out_size) in enumerate(zip([input_size] + layer_sizes[:-1],
                                                     layer_sizes)):
             self.network.add_module(
                 name=f"L{i}", module=nn.Linear(in_size, out_size))
-            if i+1 < len(layer_sizes):
-                self.network.add_module(
-                    name=f"A{i}", module=nn.ReLU()
+            if i + 1 < len(layer_sizes):
+                self.MLP.add_module(name=f"A{i}", module=nn.ReLU())
             else:
-                self.network.add_module(name="sigmoid", module=nn.Sigmoid())
+                self.MLP.add_module(name="sigmoid", module=nn.Sigmoid())
 
         self.linear_z = nn.Linear(layer_sizes[-1], latent_size)
-
 
     def forward(self, z):
         x = self.network(z)
