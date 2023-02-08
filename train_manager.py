@@ -9,6 +9,8 @@ from models.CVAE import *
 from models.loss import *
 from models.optimizer import *
 
+from collections import defaultdict
+
 
 def train(args):
     """ Initialization """
@@ -50,6 +52,7 @@ def train(args):
     # Init Scaler
     scaler = torch.cuda.amp.GradScaler()
 
+    """ Training phase """
     # Loops over epochs
     for epoch in range(start_epoch, args.epochs):
         for iteration, (x, _) in enumerate(data_loader):
@@ -60,8 +63,8 @@ def train(args):
 
             # Calculate loss function
             with torch.cuda.amp.autocast():
-                o_batch = model(x_batch)
-                loss = loss_fn(x_batch, o_batch)
+                recon_x, embed_z = model(x_batch)
+                loss = loss_fn(x_batch, recon_x)
 
             # Update loss function
             scaler.scale(loss).backward()
@@ -69,5 +72,3 @@ def train(args):
             scaler.update()
 
             # Logging data
-
-            pass
