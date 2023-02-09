@@ -26,10 +26,9 @@ def train(args):
     optimizer = torch.optim.Adam(model.parameters(),
                                  lr=args.lr,
                                  weight_decay=args.wd,
-                                 amsgrad=1)
+                                 amsgrad=True)
 
     # Load checkpoint
-    print(args.exp_dir / "model.pth")
     if (args.exp_dir / "model.pth").is_file():
         if args.rank == 0:
             print("resuming from checkpoint")
@@ -41,11 +40,12 @@ def train(args):
         start_epoch = 0
 
     # get dataset
-    dataset = MNIST(
-        root='data', train=True, transform=transforms.ToTensor(),
-        download=True)
-    data_loader = DataLoader(
-        dataset=dataset, batch_size=args.batch_size, shuffle=True)
+    if (args. / "model.pth").is_file():
+        dataset = MNIST(
+            root='data', train=True, transform=transforms.ToTensor(),
+            download=True)
+        data_loader = DataLoader(
+            dataset=dataset, batch_size=args.batch_size, shuffle=True)
 
     # Time parameters
     start_time = last_logging = time.time()

@@ -1,7 +1,7 @@
 # Import Library
-from utils.setting_setup import *
-from train_manager import *
 from test_manager import *
+from train_manager import *
+from utils.setting_setup import *
 
 if __name__ == "__main__":
     # get parser

@@ -36,6 +36,8 @@ def get_arguments():
                         help="learning rate")
     parser.add_argument("--wd", type=float, default=0.001,
                         help="weight decay")
+    parser.add_argument("--batch-size", type=int, default=128,
+                        help="Data batch size")
 
     # --------------------- loss config
 
