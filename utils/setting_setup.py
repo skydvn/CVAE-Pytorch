@@ -19,6 +19,8 @@ def get_arguments():
     # --------------------- flag & name
     parser.add_argument("--mode", type=str, default="train",
                         help="experiment mode")
+    parser.add_argument("--log-delay", type=float, default=2.0,
+                        help="Time between two consecutive logs (in seconds)")
 
     # --------------------- model config
     parser.add_argument("--encoder", type=str, default="dense",

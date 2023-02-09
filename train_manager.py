@@ -1,5 +1,9 @@
 import torch
 import time
+import json
+import os
+import sys
+import math
 
 from torch.utils.data import DataLoader
 from torchvision import transforms
@@ -62,9 +66,9 @@ def train(args):
         for iteration, (x, _) in enumerate(data_loader):
             # Get data batch
             x_batch = x.to(device)
-            if iteration == 1:
-                break
+
             # Update learning rate
+            lr = args.lr
 
             # Calculate loss function
             with torch.cuda.amp.autocast():
@@ -76,4 +80,18 @@ def train(args):
             scaler.step(optimizer)
             scaler.update()
 
-            # Logging data
+            # Log data when delay time meets "log_delay"
+            current_time = time.time()
+            train_delay = current_time-last_logging
+            if train_delay>args.log_delay:
+                # print(f"iter: {iteration}, delay: {train_delay}")
+                stats = dict(
+                    epoch=epoch,
+                    step=iteration,
+                    loss=loss.item(),
+                    time=int(train_delay),
+                    lr=lr,
+                )
+                print(json.dumps(stats))
+                # print(json.dumps(stats), file=stats_file)
+                last_logging = current_time
