@@ -30,5 +30,4 @@ class CVAE(nn.Module):
 
         z = self.encoder(x)
         recon_x = self.decoder(z)
-        print(f"dec_output: {recon_x.size()}, ")
         return recon_x, z

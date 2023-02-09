@@ -62,18 +62,18 @@ def train(args):
         for iteration, (x, _) in enumerate(data_loader):
             # Get data batch
             x_batch = x.to(device)
-            if iteration == 2:
+            if iteration == 1:
                 break
             # Update learning rate
-            recon_x, embed_z = model(x_batch)
+
             # Calculate loss function
-            # with torch.cuda.amp.autocast():
-            #     recon_x, embed_z = model(x_batch)
-            #     loss = loss_fn(recon_x, x_batch)
+            with torch.cuda.amp.autocast():
+                recon_x, embed_z = model(x_batch)
+                loss = loss_fn(recon_x, x_batch)
 
             # Update loss function
-            # scaler.scale(loss).backward()
-            # scaler.step(optimizer)
-            # scaler.update()
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
 
             # Logging data
