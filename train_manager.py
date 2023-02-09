@@ -40,19 +40,17 @@ def train(args):
         start_epoch = 0
 
     # get dataset
-    if (args. / "model.pth").is_file():
-        dataset = MNIST(
-            root='data', train=True, transform=transforms.ToTensor(),
-            download=True)
-        data_loader = DataLoader(
-            dataset=dataset, batch_size=args.batch_size, shuffle=True)
+    dataset = MNIST(
+        root=args.data_dir, train=True, transform=transforms.ToTensor(),
+        download=True)
+    data_loader = DataLoader(
+        dataset=dataset, batch_size=args.batch_size, shuffle=True)
 
     # Time parameters
     start_time = last_logging = time.time()
 
     # Init Scaler
     scaler = torch.cuda.amp.GradScaler()
-
     """ Training phase """
     # Loops over epochs
     for epoch in range(start_epoch, args.epochs):

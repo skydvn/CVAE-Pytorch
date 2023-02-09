@@ -11,7 +11,7 @@ def get_arguments():
                         help="number of runs")
 
     # --------------------- Path
-    parser.add_argument("--data-dir", type=Path, default="/path/to/mnist",
+    parser.add_argument("--data-dir", type=Path, default="D:/Datasets/",
                         help="Path to the mnist dataset")
     parser.add_argument("--exp-dir", type=Path, default="./exp",
                         help="Path to the experiment folder, where all logs/checkpoints will be stored")
