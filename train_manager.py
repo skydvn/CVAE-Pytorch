@@ -20,6 +20,7 @@ def train(args):
         torch.cuda.manual_seed(args.seed)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(device)
 
     # Model define
     model = CVAE(args, device).to(device)
@@ -40,9 +41,13 @@ def train(args):
         start_epoch = 0
 
     # get dataset
+    if (args.data_dir / "raw/t10k-labels-idx1-ubyte.gz").is_file:
+        f_down = False
+    else:
+        f_down = True
     dataset = MNIST(
         root=args.data_dir, train=True, transform=transforms.ToTensor(),
-        download=True)
+        download=f_down)
     data_loader = DataLoader(
         dataset=dataset, batch_size=args.batch_size, shuffle=True)
 
@@ -57,17 +62,18 @@ def train(args):
         for iteration, (x, _) in enumerate(data_loader):
             # Get data batch
             x_batch = x.to(device)
-
+            if iteration == 2:
+                break
             # Update learning rate
-
+            recon_x, embed_z = model(x_batch)
             # Calculate loss function
-            with torch.cuda.amp.autocast():
-                recon_x, embed_z = model(x_batch)
-                loss = loss_fn(x_batch, recon_x)
+            # with torch.cuda.amp.autocast():
+            #     recon_x, embed_z = model(x_batch)
+            #     loss = loss_fn(recon_x, x_batch)
 
             # Update loss function
-            scaler.scale(loss).backward()
-            scaler.step(optimizer)
-            scaler.update()
+            # scaler.scale(loss).backward()
+            # scaler.step(optimizer)
+            # scaler.update()
 
             # Logging data
