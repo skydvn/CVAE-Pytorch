@@ -21,6 +21,8 @@ def get_arguments():
                         help="experiment mode")
     parser.add_argument("--log-delay", type=float, default=2.0,
                         help="Time between two consecutive logs (in seconds)")
+    parser.add_argument("--eval", type=bool, default=True,
+                        help="Evaluation Trigger")
 
     # --------------------- model config
     parser.add_argument("--encoder", type=str, default="dense",
@@ -36,10 +38,12 @@ def get_arguments():
                         help="number of training epochs")
     parser.add_argument("--lr", type=float, default=0.005,
                         help="learning rate")
-    parser.add_argument("--wd", type=float, default=0.001,
+    parser.add_argument("--wd", type=float, default=1e-6,
                         help="weight decay")
     parser.add_argument("--batch-size", type=int, default=128,
                         help="Data batch size")
+    parser.add_argument("--scaler", type=bool, default=False,
+                        help="Trigger the torch scaler function")
 
     # --------------------- loss config
 

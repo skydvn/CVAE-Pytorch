@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import math
+from statistics import mean
 
 from torch.utils.data import DataLoader
 from torchvision import transforms
@@ -54,15 +55,23 @@ def train(args):
         download=f_down)
     data_loader = DataLoader(
         dataset=dataset, batch_size=args.batch_size, shuffle=True)
-
+    test_set = MNIST(
+        root=args.data_dir, train=False, transform=transforms.ToTensor(),
+        download=f_down)
+    test_loader = DataLoader(
+        dataset=test_set, batch_size=args.batch_size, shuffle=False)
     # Time parameters
     start_time = last_logging = time.time()
 
     # Init Scaler
-    scaler = torch.cuda.amp.GradScaler()
+    if args.scaler == True:
+        scaler = torch.cuda.amp.GradScaler()
+    else:
+        scaler = None
     """ Training phase """
     # Loops over epochs
     for epoch in range(start_epoch, args.epochs):
+        train_loss_list = []
         for iteration, (x, _) in enumerate(data_loader):
             # Get data batch
             x_batch = x.to(device)
@@ -71,18 +80,24 @@ def train(args):
             lr = args.lr
 
             # Calculate loss function
-            with torch.cuda.amp.autocast():
-                recon_x, embed_z = model(x_batch)
-                loss = loss_fn(recon_x, x_batch)
+            # with torch.cuda.amp.autocast():
+            recon_x, embed_z = model(x_batch)
+            loss = loss_fn(recon_x, x_batch)
 
             # Update loss function
-            scaler.scale(loss).backward()
-            scaler.step(optimizer)
-            scaler.update()
+            if args.scaler == True:
+                scaler.scale(loss).backward()
+                scaler.step(optimizer)
+                scaler.update()
+            else:
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
 
             # Log data when delay time meets "log_delay"
             current_time = time.time()
             train_delay = current_time-last_logging
+            train_loss_list.append(loss.item())
             if train_delay>args.log_delay:
                 # print(f"iter: {iteration}, delay: {train_delay}")
                 stats = dict(
@@ -95,3 +110,14 @@ def train(args):
                 print(json.dumps(stats))
                 # print(json.dumps(stats), file=stats_file)
                 last_logging = current_time
+        # Evaluate results
+        if args.eval == True:
+            eval_list = []
+            for step, (x, _) in enumerate(test_loader):
+                x_test = x.to("cpu")
+                with torch.no_grad():
+                    recon_x, embed_z = model(x_test)
+                    eval = eval_fn(recon_x, x_test)
+                    eval_list.append(eval)
+            eval_val = mean(eval_list)
+            print(f"epoch {epoch}: train:{mean(train_loss_list)} - eval:{eval_val}")
