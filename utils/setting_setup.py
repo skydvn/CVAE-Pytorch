@@ -11,7 +11,7 @@ def get_arguments():
                         help="number of runs")
 
     # --------------------- Path
-    parser.add_argument("--data-dir", type=Path, default="D:/Datasets/s",
+    parser.add_argument("--data-dir", type=Path, default="D:/Datasets/",
                         help="Path to the mnist dataset")
     parser.add_argument("--exp-dir", type=Path, default="./exp",
                         help="Path to the experiment folder, where all logs/checkpoints will be stored")
@@ -27,9 +27,9 @@ def get_arguments():
     # --------------------- model config
     parser.add_argument("--encoder", type=str, default="dense",
                         help="model type CVAE")
-    parser.add_argument("--en_size", type=list, default=[784, 512, 256],
+    parser.add_argument("--en_size", type=list, default=[784, 784, 512, 256],
                         help="encoder layer size")
-    parser.add_argument("--de_size", type=list, default=[256, 512, 784],
+    parser.add_argument("--de_size", type=list, default=[256, 512, 784, 784],
                         help="decoder layer size")
     parser.add_argument("--latent_size", type=int, default=128,
                         help="Embedding vector size")

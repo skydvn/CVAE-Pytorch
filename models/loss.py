@@ -10,6 +10,7 @@ def loss_fn(recon_x, x):
         BCE = F.mse_loss(recon_x.view(-1, 28 * 28), x.view(-1, 28 * 28), reduction="mean")
     return BCE
 
+
 # def loss_fn(recon_x, x, mean, log_var):
 #     BCE = torch.nn.functional.binary_cross_entropy(
 #         recon_x.view(-1, 28 * 28), x.view(-1, 28 * 28), reduction='sum')

@@ -5,6 +5,7 @@ import os
 import sys
 import math
 from statistics import mean
+from pathlib import Path
 
 from torch.utils.data import DataLoader
 from torchvision import transforms
@@ -46,10 +47,13 @@ def train(args):
         start_epoch = 0
 
     # get dataset
-    if (args.data_dir / "raw/t10k-labels-idx1-ubyte.gz").is_file:
+    chk_file = Path((args.data_dir / "raw/t10k-labels-idx1-ubyte.gz"))
+    if os.path.isfile(chk_file):
+        print("1")
         f_down = False
     else:
         f_down = True
+    print(f_down)
     dataset = MNIST(
         root=args.data_dir, train=True, transform=transforms.ToTensor(),
         download=f_down)
@@ -64,7 +68,7 @@ def train(args):
     start_time = last_logging = time.time()
 
     # Init Scaler
-    if args.scaler == True:
+    if args.scaler:
         scaler = torch.cuda.amp.GradScaler()
     else:
         scaler = None
@@ -85,7 +89,7 @@ def train(args):
             loss = loss_fn(recon_x, x_batch)
 
             # Update loss function
-            if args.scaler == True:
+            if args.scaler:
                 scaler.scale(loss).backward()
                 scaler.step(optimizer)
                 scaler.update()
@@ -96,9 +100,9 @@ def train(args):
 
             # Log data when delay time meets "log_delay"
             current_time = time.time()
-            train_delay = current_time-last_logging
+            train_delay = current_time - last_logging
             train_loss_list.append(loss.item())
-            if train_delay>args.log_delay:
+            if train_delay > args.log_delay:
                 # print(f"iter: {iteration}, delay: {train_delay}")
                 stats = dict(
                     epoch=epoch,
@@ -111,13 +115,14 @@ def train(args):
                 # print(json.dumps(stats), file=stats_file)
                 last_logging = current_time
         # Evaluate results
-        if args.eval == True:
+        if args.eval:
             eval_list = []
             for step, (x, _) in enumerate(test_loader):
                 x_test = x.to("cpu")
                 with torch.no_grad():
                     recon_x, embed_z = model(x_test)
-                    eval = eval_fn(recon_x, x_test)
-                    eval_list.append(eval)
+                    eval_val = eval_fn(recon_x, x_test)
+                    eval_list.append(eval_val)
             eval_val = mean(eval_list)
-            print(f"epoch {epoch}: train:{mean(train_loss_list)} - eval:{eval_val}")
+            print(f"epoch {epoch}: train:{mean(train_loss_list)} - eval:{eval_val} - delay: {current_time - last_logging}")
+            last_logging = current_time
