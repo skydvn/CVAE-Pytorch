@@ -79,6 +79,7 @@ def train(args):
     # Loops over epochs
     for epoch in range(start_epoch, args.epochs):
         train_loss_list = []
+        model.train()
         for iteration, (x, _) in enumerate(data_loader):
             # Get data batch
             x_batch = x.to(device)
@@ -120,6 +121,7 @@ def train(args):
                 last_logging = current_time
         # Evaluate results
         if args.eval:
+            model.eval()
             eval_list = []
             for step, (x, _) in enumerate(test_loader):
                 x_test = x.to("cpu")
