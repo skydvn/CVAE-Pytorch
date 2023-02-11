@@ -23,9 +23,8 @@ def train(args):
     # CUDA
     torch.manual_seed(args.seed)
     if torch.cuda.is_available():
-        torch.cuda.manual_seed(args.seed)
         device = torch.device("cuda")
-        torch.set_default_tensor_type(torch.cuda.FloatTensor)
+        torch.cuda.set_device(0)
     else:
         device = torch.device("cpu")
 
@@ -56,7 +55,6 @@ def train(args):
         f_down = False
     else:
         f_down = True
-    print(f_down)
     dataset = MNIST(
         root=args.data_dir, train=True, transform=transforms.ToTensor(),
         download=f_down)
@@ -80,7 +78,9 @@ def train(args):
     for epoch in range(start_epoch, args.epochs):
         train_loss_list = []
         model.train()
-        for iteration, (x, _) in enumerate(data_loader):
+        iteration = 0
+        for x, _ in data_loader:
+            iteration += 1
             # Get data batch
             x_batch = x.to(device)
 
@@ -124,7 +124,7 @@ def train(args):
             model.eval()
             eval_list = []
             for step, (x, _) in enumerate(test_loader):
-                x_test = x.to("cpu")
+                x_test = x.to(device)
                 with torch.no_grad():
                     recon_x, embed_z = model(x_test)
                     eval_val = eval_fn(recon_x, x_test)
