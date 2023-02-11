@@ -66,7 +66,7 @@ def train(args):
         dataset=test_set, batch_size=args.batch_size, shuffle=False)
     # Time parameters
     start_time = last_logging = time.time()
-
+    current_time = start_time
     # Init Scaler
     if args.scaler:
         scaler = torch.cuda.amp.GradScaler()
@@ -103,7 +103,7 @@ def train(args):
             current_time = time.time()
             train_delay = current_time - last_logging
             train_loss_list.append(loss.item())
-            if train_delay > args.log_delay:
+            if (train_delay > args.log_delay) & args.log_flag:
                 # print(f"iter: {iteration}, delay: {train_delay}")
                 stats = dict(
                     epoch=epoch,
