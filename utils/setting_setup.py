@@ -23,6 +23,8 @@ def get_arguments():
                         help="Time between two consecutive logs (in seconds)")
     parser.add_argument("--eval", type=bool, default=True,
                         help="Evaluation Trigger")
+    parser.add_argument("--log-flag", type=bool, default=False,
+                        help="Logging Trigger")
 
     # --------------------- model config
     parser.add_argument("--encoder", type=str, default="dense",
