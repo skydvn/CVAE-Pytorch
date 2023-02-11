@@ -24,8 +24,11 @@ def train(args):
     torch.manual_seed(args.seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed(args.seed)
+        device = torch.device("cuda")
+        torch.set_default_tensor_type(torch.cuda.FloatTensor)
+    else:
+        device = torch.device("cpu")
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(device)
 
     # Model define

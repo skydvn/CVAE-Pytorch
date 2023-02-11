@@ -8,7 +8,6 @@ import torch
 if __name__ == "__main__":
     # get parser
     args = get_arguments()
-    print(torch.cuda.is_available())
 
     if args.mode == "train":
         train(args)
