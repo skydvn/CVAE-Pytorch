@@ -83,17 +83,18 @@ def train(args):
             # Update learning rate
             lr = args.lr
 
-            # Calculate loss function
-            # with torch.cuda.amp.autocast():
-            recon_x, embed_z = model(x_batch)
-            loss = loss_fn(recon_x, x_batch)
-
             # Update loss function
             if args.scaler:
+                with torch.cuda.amp.autocast():
+                    recon_x, embed_z = model(x_batch)
+                    loss = loss_fn(recon_x, x_batch)
                 scaler.scale(loss).backward()
                 scaler.step(optimizer)
                 scaler.update()
             else:
+                recon_x, embed_z = model(x_batch)
+                loss = loss_fn(recon_x, x_batch)
+
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
